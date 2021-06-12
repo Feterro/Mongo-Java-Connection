@@ -43,6 +43,7 @@ public class cargarBaseDatos {
         collection = database.getCollection(nombreColeccion);
 
         for(String articulo: articulos){
+            System.out.println(articulos.indexOf(articulo));
             collection.insert((DBObject) JSON.parse(articulo));
         }
 
@@ -50,14 +51,56 @@ public class cargarBaseDatos {
     }
 
     public String convertirXML_JSON(String path) throws IOException {
+        String articulos = "";
+        File directorio = new File(path);
+        String pathCompleta = path;
+        if (directorio.exists()){
+            File[] archivos = directorio.listFiles();
+            if (archivos != null) {
+                for (File file : archivos) {
+                    pathCompleta = path + "\\" + file.getName();
+                    File xml = new File(pathCompleta);
+                    byte[] b = Files.readAllBytes(xml.toPath());
+                    String xmlStr = new String(b);
+                    String xrempREU = xmlStr.replaceAll("<REUTERS.*>", "<REUTERS>");
+                    String xrempUnk = xrempREU.replaceAll("<UNKNOWN>\\n*\\s*[^<]*\\n*\\s*</UNKNOWN>", "");
+                    String xrempMKN = xrempUnk.replaceAll("<MKNOTE>\\n*\\s*[^<]*\\n*\\s*</MKNOTE>", "");
+                    String xrempComp = xrempMKN.replaceAll("<COMPANIES>\\n*\\s*[^<]*\\n*\\s*</COMPANIES>", "");
+                    JSONObject jsonObj = XML.toJSONObject(xrempComp);
+                    String jsonStr = jsonObj.toString();
+                    String jrempIni = jsonStr.replaceAll("\\{\\n*\\s*\"COLLECTION\":\\{\\n*\\s*\"REUTERS\":\\[\\n*\\s*\\{", "{");
+                    String jrempFin = jrempIni.replaceAll("}\\n*\\s*]\\n*\\s*}\\n*\\s*}", "}");
+                    String jrempListaIni = jrempFin.replaceAll("\\{\\n*\\s*\"D\":\\[\"|\\{\\n*\\s*\"D\":\"", "[\"");
+                    String jrempListaFin = jrempListaIni.replaceAll("},", "],");
+                    String jrempListaTxt = jrempListaFin.replaceAll("],\\n*\\s*\"PLACES\"", "},\"PLACES\"");
+                    String jrempListaEXCHArr = jrempListaTxt.replaceAll("],\\{\"EXCHANGES\"", "},\\{\"EXCHANGES\"");
+                    String jrempExcArr = jrempListaEXCHArr.replaceAll("}},", "]}},");
+                    String ArrFix = jrempExcArr.replaceAll("]]", "]");
+                    String jrempListaFinPla = ArrFix.replaceAll("}},", "},");
+                    String ArrFix2 = jrempListaFinPla.replaceAll("}}", "]}");
+                    articulos = articulos + ArrFix2;
+                }
+            }
+            else{
+                System.out.println("Directorio sin archivos");
+                cargarMongoBD();
+            }
+        }
+        else{
+            System.out.println("Ruta inválida");
+            cargarMongoBD();
+        }
+        return articulos;
+    }
+    public String convertirXML_JSON2(String path) throws IOException {
 
         File xml = new File(path);
         byte[] b = Files.readAllBytes(xml.toPath());
         String xmlStr = new String(b);
-        String xrempREU = xmlStr.replaceAll("<REUTERS.*>","<REUTERS>");
-        String xrempUnk = xrempREU.replaceAll("<UNKNOWN>\\n*\\s*[^<]*\\n*\\s*</UNKNOWN>","");
-        String xrempMKN = xrempUnk.replaceAll("<MKNOTE>\\n*\\s*[^<]*\\n*\\s*</MKNOTE>","");
-        String xrempComp = xrempMKN.replaceAll("<COMPANIES>\\n*\\s*[^<]*\\n*\\s*</COMPANIES>","");
+        String xrempREU = xmlStr.replaceAll("<REUTERS.*>", "<REUTERS>");
+        String xrempUnk = xrempREU.replaceAll("<UNKNOWN>\\n*\\s*[^<]*\\n*\\s*</UNKNOWN>", "");
+        String xrempMKN = xrempUnk.replaceAll("<MKNOTE>\\n*\\s*[^<]*\\n*\\s*</MKNOTE>", "");
+        String xrempComp = xrempMKN.replaceAll("<COMPANIES>\\n*\\s*[^<]*\\n*\\s*</COMPANIES>", "");
         JSONObject jsonObj = XML.toJSONObject(xrempComp);
         String jsonStr = jsonObj.toString();
         String jrempIni = jsonStr.replaceAll("\\{\\n*\\s*\"COLLECTION\":\\{\\n*\\s*\"REUTERS\":\\[\\n*\\s*\\{", "{");
@@ -66,12 +109,12 @@ public class cargarBaseDatos {
         String jrempListaFin = jrempListaIni.replaceAll("},", "],");
         String jrempListaTxt = jrempListaFin.replaceAll("],\\n*\\s*\"PLACES\"", "},\"PLACES\"");
         String jrempListaEXCHArr = jrempListaTxt.replaceAll("],\\{\"EXCHANGES\"", "},\\{\"EXCHANGES\"");
-        String jrempExcArr = jrempListaEXCHArr.replaceAll("}},","]}},");
-        String ArrFix = jrempExcArr.replaceAll("]]","]");
+        String jrempExcArr = jrempListaEXCHArr.replaceAll("}},", "]}},");
+        String ArrFix = jrempExcArr.replaceAll("]]", "]");
         String jrempListaFinPla = ArrFix.replaceAll("}},", "},");
-        String ArrFix2 = jrempListaFinPla.replaceAll("}}","]}");
-
+        String ArrFix2 = jrempListaFinPla.replaceAll("}}", "]}");
         return ArrFix2;
+
     }
 
     public void cargarMongoBD() throws IOException {
@@ -87,8 +130,10 @@ public class cargarBaseDatos {
         ArrayList<String> articulos = listarJason(JSON);
         insertarJason(articulos, coleccionNombre);
         System.out.println("Los artículos fueron insertados en la base de datos");
+    }
 
-
-
+    public static void main(String[] args) throws IOException {
+        cargarBaseDatos cargarBaseDatos = new cargarBaseDatos();
+        cargarBaseDatos.cargarMongoBD();
     }
 }
