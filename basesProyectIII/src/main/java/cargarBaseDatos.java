@@ -39,7 +39,7 @@ public class cargarBaseDatos {
     public boolean insertarJason(ArrayList<String> articulos, String nombreColeccion) throws UnknownHostException {
 
         mongoClient = new MongoClient("localhost", 27017);
-        database = mongoClient.getDB("basesIIproyecto");
+        database = mongoClient.getDB("BDPruebas");
         collection = database.getCollection(nombreColeccion);
 
         for(String articulo: articulos){
@@ -69,8 +69,9 @@ public class cargarBaseDatos {
         String jrempExcArr = jrempListaEXCHArr.replaceAll("}},","]}},");
         String ArrFix = jrempExcArr.replaceAll("]]","]");
         String jrempListaFinPla = ArrFix.replaceAll("}},", "},");
+        String ArrFix2 = jrempListaFinPla.replaceAll("}}","]}");
 
-        return jrempListaFinPla;
+        return ArrFix2;
     }
 
     public void cargarMongoBD() throws IOException {
