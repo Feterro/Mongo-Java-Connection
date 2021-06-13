@@ -62,10 +62,10 @@ public class cargarBaseDatos {
                     File xml = new File(pathCompleta);
                     byte[] b = Files.readAllBytes(xml.toPath());
                     String xmlStr = new String(b);
-                    String xrempREU = xmlStr.replaceAll("<REUTERS.*>", "<REUTERS>");
-                    String xrempUnk = xrempREU.replaceAll("<UNKNOWN>\\n*\\s*[^<]*\\n*\\s*</UNKNOWN>", "");
-                    String xrempMKN = xrempUnk.replaceAll("<MKNOTE>\\n*\\s*[^<]*\\n*\\s*</MKNOTE>", "");
-                    String xrempComp = xrempMKN.replaceAll("<COMPANIES>\\n*\\s*[^<]*\\n*\\s*</COMPANIES>", "");
+                    String xrempREU = xmlStr.replaceAll("<REUTERS.*>","<REUTERS>");
+                    String xrempUnk = xrempREU.replaceAll("<UNKNOWN>\\n*\\s*[^<]*\\n*\\s*</UNKNOWN>","");
+                    String xrempMKN = xrempUnk.replaceAll("<MKNOTE>\\n*\\s*[^<]*\\n*\\s*</MKNOTE>","");
+                    String xrempComp = xrempMKN.replaceAll("<COMPANIES>\\n*\\s*[^<]*\\n*\\s*</COMPANIES>","");
                     JSONObject jsonObj = XML.toJSONObject(xrempComp);
                     String jsonStr = jsonObj.toString();
                     String jrempIni = jsonStr.replaceAll("\\{\\n*\\s*\"COLLECTION\":\\{\\n*\\s*\"REUTERS\":\\[\\n*\\s*\\{", "{");
@@ -73,12 +73,14 @@ public class cargarBaseDatos {
                     String jrempListaIni = jrempFin.replaceAll("\\{\\n*\\s*\"D\":\\[\"|\\{\\n*\\s*\"D\":\"", "[\"");
                     String jrempListaFin = jrempListaIni.replaceAll("},", "],");
                     String jrempListaTxt = jrempListaFin.replaceAll("],\\n*\\s*\"PLACES\"", "},\"PLACES\"");
-                    String jrempListaEXCHArr = jrempListaTxt.replaceAll("],\\{\"EXCHANGES\"", "},\\{\"EXCHANGES\"");
-                    String jrempExcArr = jrempListaEXCHArr.replaceAll("}},", "]}},");
-                    String ArrFix = jrempExcArr.replaceAll("]]", "]");
+                    String jrempPlaCom = jrempListaTxt.replaceAll("PLACES\":\"\"", "PLACES\":\\[\"\"\\]");
+                    String jrempListaEXCHArr = jrempPlaCom.replaceAll("],\\{\"EXCHANGES\"", "},\\{\"EXCHANGES\"");
+                    String jrempExcArr = jrempListaEXCHArr.replaceAll("}},","]}},");
+                    String ArrFix = jrempExcArr.replaceAll("]]","]");
                     String jrempListaFinPla = ArrFix.replaceAll("}},", "},");
-                    String ArrFix2 = jrempListaFinPla.replaceAll("}}", "]}");
-                    articulos = articulos + ArrFix2;
+                    String ArrFix2 = jrempListaFinPla.replaceAll("}}","]}");
+                    String ArrFix3 = ArrFix2.replaceAll("]]","]");
+                    articulos = articulos + ArrFix3;
                 }
             }
             else{
@@ -97,10 +99,10 @@ public class cargarBaseDatos {
         File xml = new File(path);
         byte[] b = Files.readAllBytes(xml.toPath());
         String xmlStr = new String(b);
-        String xrempREU = xmlStr.replaceAll("<REUTERS.*>", "<REUTERS>");
-        String xrempUnk = xrempREU.replaceAll("<UNKNOWN>\\n*\\s*[^<]*\\n*\\s*</UNKNOWN>", "");
-        String xrempMKN = xrempUnk.replaceAll("<MKNOTE>\\n*\\s*[^<]*\\n*\\s*</MKNOTE>", "");
-        String xrempComp = xrempMKN.replaceAll("<COMPANIES>\\n*\\s*[^<]*\\n*\\s*</COMPANIES>", "");
+        String xrempREU = xmlStr.replaceAll("<REUTERS.*>","<REUTERS>");
+        String xrempUnk = xrempREU.replaceAll("<UNKNOWN>\\n*\\s*[^<]*\\n*\\s*</UNKNOWN>","");
+        String xrempMKN = xrempUnk.replaceAll("<MKNOTE>\\n*\\s*[^<]*\\n*\\s*</MKNOTE>","");
+        String xrempComp = xrempMKN.replaceAll("<COMPANIES>\\n*\\s*[^<]*\\n*\\s*</COMPANIES>","");
         JSONObject jsonObj = XML.toJSONObject(xrempComp);
         String jsonStr = jsonObj.toString();
         String jrempIni = jsonStr.replaceAll("\\{\\n*\\s*\"COLLECTION\":\\{\\n*\\s*\"REUTERS\":\\[\\n*\\s*\\{", "{");
@@ -108,12 +110,15 @@ public class cargarBaseDatos {
         String jrempListaIni = jrempFin.replaceAll("\\{\\n*\\s*\"D\":\\[\"|\\{\\n*\\s*\"D\":\"", "[\"");
         String jrempListaFin = jrempListaIni.replaceAll("},", "],");
         String jrempListaTxt = jrempListaFin.replaceAll("],\\n*\\s*\"PLACES\"", "},\"PLACES\"");
-        String jrempListaEXCHArr = jrempListaTxt.replaceAll("],\\{\"EXCHANGES\"", "},\\{\"EXCHANGES\"");
-        String jrempExcArr = jrempListaEXCHArr.replaceAll("}},", "]}},");
-        String ArrFix = jrempExcArr.replaceAll("]]", "]");
+        String jrempPlaCom = jrempListaTxt.replaceAll("PLACES\":\"\"", "PLACES\":\\[\"\"\\]");
+        String jrempListaEXCHArr = jrempPlaCom.replaceAll("],\\{\"EXCHANGES\"", "},\\{\"EXCHANGES\"");
+        String jrempExcArr = jrempListaEXCHArr.replaceAll("}},","]}},");
+        String ArrFix = jrempExcArr.replaceAll("]]","]");
         String jrempListaFinPla = ArrFix.replaceAll("}},", "},");
-        String ArrFix2 = jrempListaFinPla.replaceAll("}}", "]}");
-        return ArrFix2;
+        String ArrFix2 = jrempListaFinPla.replaceAll("}}","]}");
+        String ArrFix3 = ArrFix2.replaceAll("]]","]");
+
+        return ArrFix3;
 
     }
 
