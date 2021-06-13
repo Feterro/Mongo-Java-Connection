@@ -1,5 +1,5 @@
 //Map reduce
 
-var map = function(){this.PLACES.forEach(function(l){emit(l, 1);});};
-var reduce = function(l, valores){return Array.sum(valores)};
+var map = function(){this.PLACES.forEach(function(lugar){emit(lugar, 1);});};
+var reduce = function(lugar, valores){return Array.sum(valores)};
 db.mapred3.mapReduce(map, reduce, {out:"finalp"});

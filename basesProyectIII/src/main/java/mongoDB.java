@@ -20,12 +20,9 @@ public class mongoDB {
 
     public static void main (String[] args) throws IOException {
 
-
         cargarBaseDatos cargarBaseDatos = new cargarBaseDatos();
-        String json = cargarBaseDatos.convertirXML_JSON("C:\\Users\\Crystel Montero\\Documents\\Universidad" +
-                "\\2021\\I semestre\\Bases II\\Proyectos\\proyecto III\\2021-1 TP3 - Noticias Reuters - MongoDB\\reuters21578");
-        System.out.println(cargarBaseDatos.listarJason(json).size());
-//        cargarBaseDatos.cargarMongoBD();
+        cargarBaseDatos.cargarMongoBD();
+
     }
 }
 
