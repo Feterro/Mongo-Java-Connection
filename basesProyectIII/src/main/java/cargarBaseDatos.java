@@ -39,7 +39,7 @@ public class cargarBaseDatos {
     public boolean insertarJason(ArrayList<String> articulos, String nombreColeccion) throws UnknownHostException {
 
         mongoClient = new MongoClient("localhost", 27017);
-        database = mongoClient.getDB("BDPruebas");
+        database = mongoClient.getDB("BDProyecto");
         collection = database.getCollection(nombreColeccion);
 
         for(String articulo: articulos){
