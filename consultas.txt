@@ -1,0 +1,11 @@
+INDONESIA AND SUGAR
+
+db.reuters.find({PLACES:{$all:["indonesia"]},TOPICS:{$all:["sugar"]}},{"NEWID":1,"TEXT.TITLE":1}).pretty();
+
+VARIACIONES DE LA CONSULTA COLOMBIA AND COFFEE
+
+db.reuters.find({"TEXT.BODY":{$regex:/.*Colombia and coffee.*/}},{"NEWID":1,"TEXT.TITLE":1}).pretty();
+db.reuters.find({"TEXT.BODY":{$regex:/.*Colombian coffee.*/}},{"NEWID":1,"TEXT.TITLE":1}).pretty();
+db.reuters.find({"TEXT.BODY":{$regex:/.*colombia.*coffee.*|.*coffee.*colombia.*/}},{"NEWID":1,"TEXT.TITLE":1}).pretty();
+db.reuters.find({"TEXT.BODY":{$regex:/.*coffee.*/}},{"NEWID":1,"TEXT.TITLE":1}).pretty();
+db.reuters.find({"TEXT.BODY":{$regex:/.*Colombia.*/}},{"NEWID":1,"TEXT.TITLE":1}).pretty();

@@ -3,3 +3,4 @@ db.reuters.createIndex({"PLACES":1});
 db.reuters.createIndex({"PEOPLE":1});
 db.reuters.createIndex({"ORGS":1});
 db.reuters.createIndex({"EXCHANGES":1});
+db.reuters.createIndex({"TEXT.TITLE": "text" , "TEXT.BODY": "text"});
